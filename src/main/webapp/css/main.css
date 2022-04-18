@@ -1,0 +1,7 @@
+@charset "ISO-8859-1";
+
+form {font-size: 1,5em; font-family: "Josefin sans", Helvetica; margin-bottom: 30px;}
+
+thead {background-color: rgb(208, 228, 223); margin-left:100px; font-size: 1,5em; font-family: "Josefin sans", Helvetica}
+
+tbody {font-size: 1em; margin-left:100px; font-family: "Josefin sans", Helvetica}
