@@ -9,11 +9,6 @@
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/main2.css">
 <title>Insert title here</title>
-<style>
-.oikealle{
-	text-align: right;
-}
-</style>
 </head>
 <body>
 <form id="tiedot">
@@ -36,18 +31,31 @@
 				<td><input type="text" name="sukunimi" id="sukunimi"></td>
 				<td><input type="text" name="puhelin" id="puhelin"></td>
 				<td><input type="text" name="sposti" id="sposti"></td> 
-				<td><input type="submit" id="tallenna" value="Lis‰‰"></td>
+				<td><input type="submit" id="tallenna" value="Hyv‰ksy"></td>
 			</tr>
 		</tbody>
 	</table>
+	<input type="hidden" name="vanha_id" id="vanha_id">	
 </form>
 <span id="ilmo"></span>
+</body>
 <script>
 $(document).ready(function(){
 	$("#takaisin").click(function(){
 		document.location="listaaasiakkaat.jsp";
 	});
-	$("#tiedot").validate({			// validointi			
+	//Haetaan muutettavan asiakkaan tiedot. Kutsutaan backin GET-metodia ja v‰litet‰‰n kutsun mukana muutettavan tiedon id
+	//GET /asiakkaat/haeyksi/asiakas_id
+	var asiakas_id = requestURLParam("asiakas_id"); //Funktio lˆytyy scripts/main.js 	
+	$.ajax({url:"asiakkaat/haeyksi/"+asiakas_id, type:"GET", dataType:"json", success:function(result){	
+		$("#vanha_id").val(result.asiakas_id);		
+		$("#etunimi").val(result.etunimi);	
+		$("#sukunimi").val(result.sukunimi);
+		$("#puhelin").val(result.puhelin);
+		$("#sposti").val(result.sposti);			
+    }});
+	
+	$("#tiedot").validate({						
 		rules: {
 			etunimi:  {
 				required: true,
@@ -85,26 +93,22 @@ $(document).ready(function(){
 			}
 		},			
 		submitHandler: function(form) {	
-			lisaaTiedot();
+			paivitaTiedot();
 		}		
 	}); 	
 });
-//funktio tietojen lis‰‰mist‰ varten. Kutsutaan backin POST-metodia ja v‰litet‰‰n kutsun mukana uudet tiedot json-stringin‰.
-//POST /asiakkaat/
-function lisaaTiedot(){	
+//funktio tietojen p‰ivitt‰mist‰ varten. Kutsutaan backin PUT-metodia ja v‰litet‰‰n kutsun mukana uudet tiedot json-stringin‰.
+//PUT /asiakkaat/
+function paivitaTiedot(){	
 	var formJsonStr = formDataJsonStr($("#tiedot").serializeArray()); //muutetaan lomakkeen tiedot json-stringiksi
-	$.ajax({url:"asiakkaat", 
-		data:formJsonStr, 
-		type:"POST", dataType:"json", 
-		success:function(result) { //result on joko {"response:1"} tai {"response:0"}       
-	if(result.response==0){
-      	$("#ilmo").html("Asiakkaan lis‰‰minen ep‰onnistui.");
+	$.ajax({url:"asiakkaat", data:formJsonStr, type:"PUT", dataType:"json", success:function(result) { //result on joko {"response:1"} tai {"response:0"}       
+		if(result.response==0){
+      	$("#ilmo").html("Asiakkaan p‰ivitt‰minen ep‰onnistui.");
       }else if(result.response==1){			
-      	$("#ilmo").html("Asiakkaan lis‰‰minen onnistui.");
+      	$("#ilmo").html("Asiakkaan p‰ivitt‰minen onnistui.");
       	$("#etunimi", "#sukunimi", "#puhelin", "#sposti").val("");
-		}
+	  }
   }});	
 }
 </script>
-</body>
 </html>
