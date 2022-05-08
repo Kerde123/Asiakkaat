@@ -1,5 +1,4 @@
 @charset "ISO-8859-1";
-
 table {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse: collapse;  
@@ -23,19 +22,30 @@ table th {
   color: white;
 }
 
+.muuta{
+	color: green;
+	text-decoration: none;
+	cursor: pointer;	
+}
+
 .poista{
 	color: red;
-	text-decoration: underline;
+	text-decoration: none;
 	cursor: pointer;	
 }
 
 .oikealle{
 	text-align: right;	
-	
+}
+a{
+	text-decoration: none;
+	color: white;
 }
 
-#uusiAsiakas, #takaisin{
+#uusiAuto, #takaisin{
 	color: white;	
 	cursor: pointer;	
 }
+
+
 

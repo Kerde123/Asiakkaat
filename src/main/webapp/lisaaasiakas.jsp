@@ -5,8 +5,6 @@
 <head>
 <meta charset="ISO-8859-1">
 <script src="scripts/main2.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/main2.css">
 <title>Insert title here</title>
 <style>
@@ -16,7 +14,7 @@
 </style>
 </head>
 <body>
-<form id="tiedot">
+<form id="tiedot" action="lisaaasiakas" method="post">
 	<table>
 		<thead>	
 			<tr>
@@ -36,75 +34,40 @@
 				<td><input type="text" name="sukunimi" id="sukunimi"></td>
 				<td><input type="text" name="puhelin" id="puhelin"></td>
 				<td><input type="text" name="sposti" id="sposti"></td> 
-				<td><input type="submit" id="tallenna" value="Lisää"></td>
+				<td><input type="button" id="tallenna" value="Lisää" onclick="tarkasta()"></td>
 			</tr>
 		</tbody>
 	</table>
 </form>
 <span id="ilmo"></span>
+</body>
 <script>
-$(document).ready(function(){
-	$("#takaisin").click(function(){
-		document.location="listaaasiakkaat.jsp";
-	});
-	$("#tiedot").validate({			// validointi			
-		rules: {
-			etunimi:  {
-				required: true,
-				minlength: 2				
-			},	
-			sukunimi:  {
-				required: true,
-				minlength: 2				
-			},
-			puhelin:  {
-				required: true,
-				minlength: 5
-			},	
-			sposti:  {
-				required: true,
-				minlength: 5,
-			}	
-		},
-		messages: {
-			etunimi: {     
-				required: "Puuttuu",
-				minlength: "Liian lyhyt"			
-			},
-			sukunimi: {
-				required: "Puuttuu",
-				minlength: "Liian lyhyt"
-			},
-			puhelin: {
-				required: "Puuttuu",
-				minlength: "Liian lyhyt"
-			},
-			sposti: {
-				required: "Puuttuu",
-				minlength: "Liian lyhyt",
-			}
-		},			
-		submitHandler: function(form) {	
-			lisaaTiedot();
-		}		
-	}); 	
-});
-//funktio tietojen lisäämistä varten. Kutsutaan backin POST-metodia ja välitetään kutsun mukana uudet tiedot json-stringinä.
-//POST /asiakkaat/
-function lisaaTiedot(){	
-	var formJsonStr = formDataJsonStr($("#tiedot").serializeArray()); //muutetaan lomakkeen tiedot json-stringiksi
-	$.ajax({url:"asiakkaat", 
-		data:formJsonStr, 
-		type:"POST", dataType:"json", 
-		success:function(result) { //result on joko {"response:1"} tai {"response:0"}       
-	if(result.response==0){
-      	$("#ilmo").html("Asiakkaan lisääminen epäonnistui.");
-      }else if(result.response==1){			
-      	$("#ilmo").html("Asiakkaan lisääminen onnistui.");
-      	$("#etunimi", "#sukunimi", "#puhelin", "#sposti").val("");
-		}
-  }});	
+function tarkasta(){
+	if(document.getElementById("etunimi").value.length<2){
+		document.getElementById("ilmo").innerHTML="Etunimi ei kelpaa!";
+		return;
+	}else if(document.getElementById("sukunimi").value.length<2){
+		document.getElementById("ilmo").innerHTML="Sukunimi ei kelpaa!";
+		return;
+	}else if(document.getElementById("puhelin").value.length<5){
+		document.getElementById("ilmo").innerHTML="Puhelinnumero ei kelpaa!";
+		return;
+	}else if(document.getElementById("sposti").value.length<5){
+		document.getElementById("ilmo").innerHTML="Sähköposti ei kelpaa!";
+		return;
+	}
+	document.getElementById("etunimi").value=siivoa(document.getElementById("etunimi").value);
+	document.getElementById("sukunimi").value=siivoa(document.getElementById("sukunimi").value);
+	document.getElementById("puhelin").value=siivoa(document.getElementById("puhelin").value);
+	document.getElementById("sposti").value=siivoa(document.getElementById("sposti").value);
+	document.forms["tiedot"].submit();
+}
+
+function siivoa(teksti){
+	teksti=teksti.replace("<","");
+	teksti=teksti.replace(";","");
+	teksti=teksti.replace("'","''");
+	return teksti;
 }
 </script>
-</body>
 </html>
